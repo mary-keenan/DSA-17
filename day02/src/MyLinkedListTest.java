@@ -12,12 +12,12 @@ public class MyLinkedListTest {
 	private static final Chicken LEGOS = new Chicken("Legos", 400, "rainbow");
 
 	// QUESTIONS 1-7. COMMENT THIS LINE FOR GENERICS TESTING
-	// private MyLinkedList chickens;
-	// private MyLinkedList emptyChickens;
+	 private MyLinkedList chickens;
+	 private MyLinkedList emptyChickens;
 
 	// GENERICS TESTING. COMMENT THIS LINE FOR QUESTIONS 1-7
-	private MyLinkedList<Chicken> chickens;
-	private MyLinkedList<Chicken> emptyChickens;
+//	private MyLinkedList<Chicken> chickens;
+//	private MyLinkedList<Chicken> emptyChickens;
 
 	@Before
 	public void setUp() throws Exception {
