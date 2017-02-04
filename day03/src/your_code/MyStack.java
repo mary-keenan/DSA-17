@@ -3,6 +3,7 @@ package your_code;
 import ADTs.StackADT;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 /**
  * An implementation of the Stack interface.
@@ -43,10 +44,9 @@ public class MyStack implements StackADT<Integer> {
                 max_size = 0;
                 max = 0;
             }
-
             return poppedInt;
         }
-        return null;
+        throw new NoSuchElementException();
     }
 
     @Override

@@ -29,11 +29,28 @@ public class PsetProblems {
     }
 
     public static StackADT<Integer> sortStackLimitedMemory(StackADT<Integer> myStack) {
-
-
-
-
-        return null;
+        StackADT<Integer> resultStack = new MyStack(); //will be sorted in ascending order
+        int currInt = 0; //integer floating in-between stacks
+        int topInt = 0; //integer at top of result stack
+        resultStack.push(myStack.pop()); //get the first value in there
+        while (myStack.isEmpty() == false) {
+            System.out.println("new");
+            currInt = myStack.pop();
+            topInt = resultStack.peek();
+            System.out.println(currInt);
+            System.out.println(topInt);
+            if (topInt >= currInt) { //order is correct, top value is equal or smaller
+                resultStack.push(currInt);
+            } else { //order is incorrect
+                topInt = resultStack.pop(); //put topInt back in old stack
+                myStack.push(topInt);
+                if (resultStack.isEmpty()){ //if nothing is in the result stack, currInt goes there
+                    resultStack.push(currInt);
+                }
+                myStack.push(currInt); //put currInt back in old stack, but now it's on top
+            }
+        }
+        return resultStack;
     }
 
 }

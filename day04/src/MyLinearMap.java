@@ -1,3 +1,5 @@
+import sun.awt.SunHints;
+
 import java.util.*;
 
 /**
@@ -44,9 +46,18 @@ public class MyLinearMap<K, V> implements Map<K, V> {
 
 	// Returns the entry that contains the target key, or null if there is none.
 	private Entry findEntry(Object target) {
-		// TODO
-		return null;
-	}
+		for (int i = 0; i < entries.size(); i++){ //iterate through entries to see if key exists
+            if (entries.get(i).getKey() == null || target == null){ //if entry key or target key is null
+                if (entries.get(i).getKey() == null && target == null){ //compare them manually
+                    return entries.get(i); //because using equals() throws an error
+                }
+            }
+            else if (entries.get(i).getKey().equals(target)){ //if neither key is null, we use equals() to compare them
+			    return entries.get(i);
+            }
+		}
+		return null; //	throw new NoSuchElementException;
+    }
 
 	// Compares two keys or two values, handling null correctly.
 	private boolean equals(Object target, Object obj) {
@@ -73,8 +84,11 @@ public class MyLinearMap<K, V> implements Map<K, V> {
 
 	@Override
 	public V get(Object key) {
-		// TODO
-		return null;
+		Entry gotEntry = findEntry(key); //if there is no entry, findEntry will return null
+		if (gotEntry != null) {
+		    return gotEntry.getValue();
+        }
+		return null; //throw new NoSuchElementException();
 	}
 
 	@Override
@@ -93,9 +107,18 @@ public class MyLinearMap<K, V> implements Map<K, V> {
 
 	@Override
 	public V put(K key, V value) {
-		// TODO
-		return null;
-	}
+	    if (containsKey(key) != true) { //if there is no entry with that key
+            Entry putEntry = new Entry(key, value); //make new entry,
+            entries.add(putEntry); //append to entries list
+            return null; //nothing to return since it didn't exist
+	    } else { //if entry already exists
+	        V objectValue = get(key); //get old value
+	        remove(key); //remove it
+            Entry putEntry = new Entry(key, value);
+            entries.add(putEntry); //put new entry in
+            return objectValue; //return old value
+        }
+    }
 
 	@Override
 	public void putAll(Map<? extends K, ? extends V> map) {
@@ -106,8 +129,12 @@ public class MyLinearMap<K, V> implements Map<K, V> {
 
 	@Override
 	public V remove(Object key) {
-		// TODO
-		return null;
+	    Entry gotEntry = findEntry(key); //get entry so we can remove it (need entry object to remove, not just key)
+        if (gotEntry == null) { //if the entry doesn't exist, we return null
+            return null; //	throw new NoSuchElementException;
+        }
+        entries.remove(gotEntry);
+        return gotEntry.getValue(); //can't tell diff between value = null and entry = null (doesn't exist)
 	}
 
 	@Override

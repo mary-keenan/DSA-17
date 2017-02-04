@@ -15,7 +15,7 @@ public class MyQueue implements QueueADT<Integer> {
 
     @Override
     public void enqueue(Integer item) {
-        myLinkedList.add(size, item); //add to end of list, which has an index equal to size
+        myLinkedList.addLast(item); //add to end of list, which has an index equal to size
         size++;
     }
 
