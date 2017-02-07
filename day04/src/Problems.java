@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,20 +21,23 @@ public class Problems {
 
     public static List<Integer> removeKDigits(int[] num, int k) {
         List<Integer> newNum = new ArrayList();
-        List<Integer> indicesRemove = new ArrayList<>(); //don't remove indices until later?
-        LinkedList<Integer> moveThrough = new LinkedList<>(); //can move through list in constant time...
+
         for (int b = 0; b < num.length; b++) { //put int array into list to make removing easier -- O(n)
             newNum.add(num[b]);
         }
+
         //now start removing numbers; return list when k = 0
-        for (int i = 0; i < newNum.size() - 1; i++) { //now loop through array -- O(N)
+        for (int i = 0; i < newNum.size(); i++) { //now loop through array -- O(N)
             if (k == 0) { //this means we're done removing digits and need to return the list
                 return newNum;
             }
-            else if (newNum.get(i) >= newNum.get(i+1)) { //if we're on the number we're currently removing
-                newNum.remove(i); //
-                k--;
-                i--; //otherwise, we skip one after removing it (cause indices shift forward)
+            for (int n = 1; n <= k && i + n < newNum.size(); n++){
+                if (newNum.get(i) > newNum.get(i + n)){
+                    newNum.remove(i); //
+                    k--;
+                    i--; //otherwise, we skip one after removing it (cause indices shift forward)
+                    break; //we removed it, time to move on now
+                }
             }
         }
         //if k is still > 0 (i.e. array was [1 2 3]), just take off biggest numbers (which should be in back since it's in ascending order)
@@ -46,7 +48,7 @@ public class Problems {
             newNum.remove(i); //
             k--;
             } //don't need to shift indices here (because removing from the end of the list)
-        return null;
+        return  null; //maybe throw exception idk
     }
 
     public static int sumLists(Node<Integer> h1, Node<Integer> h2) {
@@ -79,18 +81,17 @@ public class Problems {
     }
 }
 
-//        for (int b = 0; b < num.length; b++) { //put int array into list to make removing easier -- O(n)
-//        newNum.add(num[b]);
-//        }
-//        //now start removing numbers; return list when k = 0
-//        for (int i = 0; i < newNum.size() - 1; i++) { //now loop through array -- O(N)
+//for (int i = 0; i < newNum.size(); i++) { //now loop through array -- O(N)
 //        if (k == 0) { //this means we're done removing digits and need to return the list
 //        return newNum;
 //        }
-//        else if (newNum.get(i) >= newNum.get(i+1)) { //if we're on the number we're currently removing
+//        for (int n = 1; n <= k && i + n < newNum.size(); n++){
+//        if (newNum.get(i) > newNum.get(i + n)){
 //        newNum.remove(i); //
 //        k--;
 //        i--; //otherwise, we skip one after removing it (cause indices shift forward)
+//        break; //we removed it, time to move on now
+//        }
 //        }
 //        }
 //        //if k is still > 0 (i.e. array was [1 2 3]), just take off biggest numbers (which should be in back since it's in ascending order)

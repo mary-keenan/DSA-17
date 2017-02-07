@@ -47,12 +47,7 @@ public class MyLinearMap<K, V> implements Map<K, V> {
 	// Returns the entry that contains the target key, or null if there is none.
 	private Entry findEntry(Object target) {
 		for (int i = 0; i < entries.size(); i++){ //iterate through entries to see if key exists
-            if (entries.get(i).getKey() == null || target == null){ //if entry key or target key is null
-                if (entries.get(i).getKey() == null && target == null){ //compare them manually
-                    return entries.get(i); //because using equals() throws an error
-                }
-            }
-            else if (entries.get(i).getKey().equals(target)){ //if neither key is null, we use equals() to compare them
+			if (equals(entries.get(i).getKey(),target)){ //if neither key is null, we use equals() to compare them
 			    return entries.get(i);
             }
 		}
