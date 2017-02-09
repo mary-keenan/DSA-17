@@ -23,7 +23,7 @@ public class MyHashMap<K, V> implements Map<K, V> {
 
 	// list of maps
 	protected List<MyLinearMap<K,V>> maps;
-	private int size = 0;
+	private int size = 0; //TODO: how else do I set the size w/o writing a new method? Causes errors because it stays at 0
 
 	public MyHashMap() {
 		makeMaps(MIN_MAPS);
@@ -42,29 +42,57 @@ public class MyHashMap<K, V> implements Map<K, V> {
 	/**
 	 * Initialize maps
 	 */
+
 	protected void makeMaps(int size) {
-		// TODO: Implement this method
+		maps = new ArrayList<>();
+		for (int i = 0; i < size; i++) {
+			maps.add(new MyLinearMap<K, V>());
+		}
 	}
 
 	protected MyLinearMap<K, V> chooseMap(Object key) {
-		// TODO: Implement this method
-		return null;
+		int hash = 0; //hash code for null objects is just 0
+		if (key != null) { //can't get hashCode() of null object
+			hash = key.hashCode() % maps.size(); //create hash based on number of maps
+		}
+		return maps.get(hash);
 	}
 
 	@Override
-	public boolean containsKey(Object key) {
-		// TODO
+	public boolean containsKey(Object key) { //hint from reading: use chooseMap
+		MyLinearMap<K,V> checkMap = chooseMap(key);
+		if (checkMap.get(key) != null) {
+			return true;
+		}
 		return false;
 	}
 
 	@Override
-	public boolean containsValue(Object value) {
-		// TODO
+	public boolean containsValue(Object value) { //hint from reading: don't use chooseMap
+		Collection<V> allValues = values();
+		if (allValues.contains(value)) {
+			return true;
+		}
 		return false;
 	}
 
 	protected void rehash(double growthFactor) {
-		// TODO: Implement this method
+		Map<K,V> tempMap = new MyLinearMap<>(); //get all entries
+		ArrayList<K> allKeys = new ArrayList<>();
+		for (int i = 0; i < maps.size(); i++) {
+			MyLinearMap<K,V> currMap = maps.get(i);
+			Set<K> keySet = currMap.keySet();
+			for (K key: keySet) {
+				tempMap.put(key, currMap.get(key));
+				allKeys.add(key);
+			}
+		}
+		makeMaps((int) ((double) maps.size() * growthFactor));
+		int bob = size;
+		for (K key: allKeys) {
+			put(key, tempMap.get(key));
+		}
+		size = bob;
 	}
 
 	@Override
@@ -75,13 +103,31 @@ public class MyHashMap<K, V> implements Map<K, V> {
 
 	@Override
 	public V put(K key, V value) {
-		// TODO
+		MyLinearMap<K,V> findMap = chooseMap(key);
+		if (findMap.containsKey(key)) {
+			V oldValue = findMap.get(key);
+			findMap.remove(key);
+			findMap.put(key, value);
+			return oldValue;
+		}
+		findMap.put(key, value);
+		size++;
+		if ((double) size() / (double) maps.size() > ALPHA) { //if there are too MANY entries per map on average
+			rehash(GROWTH_FACTOR);
+		}
 		return null;
 	}
 
 	@Override
 	public V remove(Object key) {
-		// TODO
+		MyLinearMap<K,V> findMap = chooseMap(key);
+		if (findMap.containsKey(key)) {
+			findMap.remove(key);
+			size--;
+			if (maps.size() > MIN_MAPS && (double) size() / (double) maps.size() < BETA) { //can't shrink if already at MIN_MAPS (if greater than, it can shrink)
+				rehash(SHRINK_FACTOR); //if there are too FEW entries per map on average
+			}
+		}
 		return null;
 	}
 
