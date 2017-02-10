@@ -22,8 +22,11 @@ public class TermCounter {
 	}
 
 	public int size() {
-		// TODO
-		return 0;
+		int count = 0;
+		for (String term: map.keySet()) {
+			count += get(term);
+		}
+		return count;
 	}
 
 	public void processElements(Elements paragraphs) {
@@ -46,20 +49,25 @@ public class TermCounter {
 		// replace punctuation with spaces, convert to lower case, and split on whitespace
 		String[] array = text.replaceAll("\\pP", " ").toLowerCase().split("\\s+");
 
-		// TODO
 		// increment the count for each term
+		for (String term: array) {
+			incrementTermCount(term);
+		}
 	}
 
 	public void incrementTermCount(String term) {
-		// TODO
+		put(term, get(term) + 1);
 	}
 
 	public void put(String term, int count) {
-		// TODO
+		map.put(term, count);
 	}
 
 	public Integer get(String term) {
-		// TODO
+		Integer count = map.get(term);
+		if (count != null) {
+			return count;
+		}
 		return 0;
 	}
 
