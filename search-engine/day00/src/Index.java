@@ -1,7 +1,9 @@
 import org.jsoup.select.Elements;
 
+import org.jsoup.nodes.Element;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,22 +13,32 @@ public class Index {
 	private Map<String, Set<TermCounter>> index = new HashMap<String, Set<TermCounter>>();
 
 	public void add(String term, TermCounter tc) {
-		// TODO
+        Set<TermCounter> set = get(term);
+        if(set == null){
+            set = new HashSet<>();
+            index.put(term,set);
+        } else {
+            set.add(tc);
+        }
+
+
 		// if we're seeing a term for the first time, make a new Set
 		// otherwise we can add the term to an existing Set
 	}
 
 	public Set<TermCounter> get(String term) {
-		// TODO
-		return null;
+	    return index.get(term);
 	}
 
 	public void indexPage(String url, Elements paragraphs) {
 		// make a TermCounter and count the terms in the paragraphs
-		// TODO
+        TermCounter tc = new TermCounter(url);
+        tc.processElements(paragraphs);
 
 		// for each term in the TermCounter, add the TermCounter to the index
-		// TODO
+		for(String term : tc.keySet()){
+		    add(term, tc);
+        }
 	}
 
 	public void printIndex() {
