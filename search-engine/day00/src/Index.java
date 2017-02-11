@@ -1,6 +1,5 @@
 import org.jsoup.select.Elements;
 
-import org.jsoup.nodes.Element;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,9 +16,10 @@ public class Index {
         if(set == null){
             set = new HashSet<>();
             index.put(term,set);
-        } else {
-            set.add(tc);
         }
+
+        set.add(tc);
+
 
 
 		// if we're seeing a term for the first time, make a new Set
