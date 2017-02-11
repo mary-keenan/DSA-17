@@ -13,14 +13,12 @@ public class Index {
 
 	public void add(String term, TermCounter tc) {
         Set<TermCounter> set = get(term);
-        if(set == null){
+        if (set == null){
             set = new HashSet<>();
             index.put(term,set);
         }
 
         set.add(tc);
-
-
 
 		// if we're seeing a term for the first time, make a new Set
 		// otherwise we can add the term to an existing Set
