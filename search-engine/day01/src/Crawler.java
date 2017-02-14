@@ -34,7 +34,7 @@ public class Crawler {
 	 * @throws IOException
 	 */
 	public void crawl(int limit) throws IOException {
-		// TODO
+		index.indexPage(queue.remove(),
 	}
 
 	void queueInternalLinks(Elements paragraphs) {
