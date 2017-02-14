@@ -41,7 +41,7 @@ public class WikiPhilosophy {
         for (int i=0; i< limit; i++){
             Element elt = getFirstValidLink(source);
 
-            if(elt ==null){
+            if(elt == null){
                 return false;
             }
             source = elt.attr("abs:href");
