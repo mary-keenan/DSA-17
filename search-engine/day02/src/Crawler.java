@@ -74,6 +74,7 @@ public class Crawler {
 		// make a WikiCrawler
 		Jedis jedis = JedisMaker.make();
 		Index index = new Index(jedis);
+
 		String source = "https://en.wikipedia.org/wiki/Java_(programming_language)";
 		Crawler wc = new Crawler(source, index);
 

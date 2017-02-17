@@ -8,14 +8,12 @@ import java.util.*;
 public class Index {
 
 	// Index: map of words to URL and their counts
-//	private Map<String, Set<TermCounter>> index = new HashMap<>();
 	private Jedis jedis;
 	private StopWords stopWords = new StopWords();
 
 	public Index(Jedis jedis) throws IOException {
 	    this.jedis = jedis;
 	}
-
 
 //	public void add(String term, TermCounter tc) {
 //        Set<TermCounter> set = get(term);
@@ -55,7 +53,6 @@ public class Index {
         // for each term in the TermCounter, add the TermCounter to the index
 		for(String term : tc.keySet()){
 		    if (!badWords.contains(term)) {
-//                add(term, tc);
                 t.hset(hashname, term, tc.get(term).toString());
                 String urlSetKey = "urlSet: " + term;
                 t.sadd(urlSetKey, url);
@@ -88,6 +85,7 @@ public class Index {
 		Jedis jedis = JedisMaker.make();
 		Index indexer = new Index(jedis);
 
+
 		String url = "https://en.wikipedia.org/wiki/Java_(programming_language)";
 		Elements paragraphs = wf.fetchWikipedia(url);
 		indexer.indexPage(url, paragraphs);
@@ -97,5 +95,6 @@ public class Index {
 		indexer.indexPage(url, paragraphs);
 
 //		indexer.printIndex();
+
 	}
 }
