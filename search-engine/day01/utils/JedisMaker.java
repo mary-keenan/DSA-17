@@ -129,6 +129,8 @@ public class JedisMaker {
         - Print the elements at the 0th and 2nd indices of that list
          */
 
+
+
 		// Hash
 		/*
 		- Create a new hash named "myhash", mapping the key "word1" to

@@ -34,7 +34,19 @@ public class Crawler {
 	 * @throws IOException
 	 */
 	public void crawl(int limit) throws IOException {
-		index.indexPage(queue.remove(),
+	    for(int i = 0; i < limit; i++){
+	        if (queue.isEmpty()){
+	            return;
+            }
+            String url = queue.remove();
+            Elements paragraphs = wf.fetchWikipedia(url);
+            if (!index.keySet().contains(url)) {
+                index.indexPage(url, paragraphs);
+                queueInternalLinks(paragraphs);
+            } else {
+                System.out.println("Already Indexed: " + url);
+            }
+        }
 	}
 
 	void queueInternalLinks(Elements paragraphs) {
@@ -68,6 +80,8 @@ public class Crawler {
 		wc.queueInternalLinks(paragraphs);
 
         // TODO: Crawl outward starting at source
+        wc.crawl(5);
+        System.out.print(wc.queue.toString());
 
 		// TODO: Test that your index contains multiple pages.
 		// Here is some sample code that tests your index, which assumes
