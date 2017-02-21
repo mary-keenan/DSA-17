@@ -1,8 +1,12 @@
+import java.awt.*;
 import java.io.IOException;
+import java.text.Collator;
 import java.util.*;
+import java.util.List;
 import java.util.Map.Entry;
 
 import redis.clients.jedis.Jedis;
+import sun.awt.image.ImageWatched;
 
 public class WikiSearch {
 
@@ -14,7 +18,11 @@ public class WikiSearch {
     }
 
     public Integer getRelevance(String url) {
-        return map.get(url);
+        if (map.get(url) != null) {
+            return map.get(url);
+        } else {
+            return 0;
+        }
     }
 
     // Prints the contents in order of term frequency.
@@ -27,12 +35,18 @@ public class WikiSearch {
 
     // Computes the union of two search results.
     public WikiSearch or(WikiSearch that) {
+        Map<String, Integer> orMap = new HashMap<>();
         for (String url: that.map.keySet()) {
-            if (this.map.containsKey(url)){
-                this.map.put(url, this.map.get(url) + that.map.get(url));
+            orMap.put(url, that.map.get(url));
+        }
+        for (String url: this.map.keySet()) {
+            if (orMap.containsKey(url)){
+                orMap.put(url, this.map.get(url) + orMap.get(url));
+            } else {
+                orMap.put(url, this.map.get(url));
             }
         }
-        return this;
+        return new WikiSearch(orMap);
     }
 
     // Computes the intersection of two search results.
@@ -63,8 +77,7 @@ public class WikiSearch {
 
     // Sort the results by relevance.
     public List<Entry<String, Integer>> sort() {
-//        List<Entry<String, Integer>> sortedMap = new ArrayList<>();
-//        Collections.sort(sortedMap);
+
         //FROM BEGINNERSBOOK.COM
         List list = new LinkedList(map.entrySet());
         // Defined Custom Comparator here
@@ -74,7 +87,7 @@ public class WikiSearch {
                         .compareTo(((Map.Entry) (o2)).getValue());
             }
         });
-        return null;
+        return list;
     }
 
 
@@ -102,16 +115,17 @@ public class WikiSearch {
         System.out.println("Query: " + term1);
         WikiSearch search1 = search(term1, index);
         search1.print();
+        System.out.print(search1.map.values());
 
         // search for the second term
-        String term2 = "programming";
-        System.out.println("Query: " + term2);
-        WikiSearch search2 = search(term2, index);
-        search2.print();
-
-        // compute the intersection of the searches
-        System.out.println("Query: " + term1 + " AND " + term2);
-        WikiSearch intersection = search1.and(search2);
-        intersection.print();
+//        String term2 = "programming";
+//        System.out.println("Query: " + term2);
+//        WikiSearch search2 = search(term2, index);
+//        search2.print();
+//
+//        // compute the intersection of the searches
+//        System.out.println("Query: " + term1 + " AND " + term2);
+//        WikiSearch intersection = search1.and(search2);
+//        intersection.print();
     }
 }

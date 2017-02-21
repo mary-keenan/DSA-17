@@ -15,6 +15,33 @@ public class Index {
 	    this.jedis = jedis;
 	}
 
+	public double computeTFIDF (String term, String url) {
+        int pageCount = getCount(term); // number of pages
+        int totalPageCount = (jedis.smembers("numPages")).size();
+        double TF = getDocFreq(term, url);
+        double IDF_fract = pageCount/totalPageCount;
+        double IDF = Math.log(IDF_fract);
+        System.out.println(TF*IDF);
+        return TF*IDF;
+	}
+
+    public double getDocFreq(String term, String url) {
+        HashMap tc = (HashMap) jedis.hgetAll("TermCounter: " + url);
+        Object temp = tc.get(term);
+        double termCount = Integer.valueOf(String.valueOf(temp));
+        return (termCount / (double) tc.size());
+    }
+
+    public int getCount(String term) { //number of pages
+        Set<String> countSet = jedis.smembers("countSet: " + term);
+        int total = 0;
+        for (String pageCount: countSet) {
+            total += Integer.valueOf(pageCount);
+        }
+        return total;
+    }
+
+
 //	public void add(String term, TermCounter tc) {
 //        Set<TermCounter> set = get(term);
 //        if (set == null){
@@ -56,6 +83,10 @@ public class Index {
                 t.hset(hashname, term, tc.get(term).toString());
                 String urlSetKey = "urlSet: " + term;
                 t.sadd(urlSetKey, url);
+                String totalCountKey = "countSet: " + term;
+//                System.out.print(tc.get(term).toString());
+                t.sadd(totalCountKey, "1");
+                t.sadd("numPages", "1");
             }
         }
         List<Object> res = t.exec();
@@ -85,7 +116,6 @@ public class Index {
 		Jedis jedis = JedisMaker.make();
 		Index indexer = new Index(jedis);
 
-
 		String url = "https://en.wikipedia.org/wiki/Java_(programming_language)";
 		Elements paragraphs = wf.fetchWikipedia(url);
 		indexer.indexPage(url, paragraphs);
@@ -93,6 +123,8 @@ public class Index {
 		url = "https://en.wikipedia.org/wiki/Programming_language";
 		paragraphs = wf.fetchWikipedia(url);
 		indexer.indexPage(url, paragraphs);
+
+		indexer.computeTFIDF("language", url);
 
 //		indexer.printIndex();
 

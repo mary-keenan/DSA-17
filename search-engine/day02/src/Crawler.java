@@ -74,6 +74,7 @@ public class Crawler {
 		// make a WikiCrawler
 		Jedis jedis = JedisMaker.make();
 		Index index = new Index(jedis);
+		jedis.flushAll();
 
 		String source = "https://en.wikipedia.org/wiki/Java_(programming_language)";
 		Crawler wc = new Crawler(source, index);
@@ -84,8 +85,11 @@ public class Crawler {
 
         // TODO: Crawl outward starting at source
         wc.crawl(5);
-        System.out.print(wc.queue.toString());
-
+//        System.out.print(wc.queue.toString());
+//		String term = "Javascript";
+//		String url = source;
+//		Map<String, Integer> map = index.get(term);
+//		System.out.println(map.get(url));
 		// TODO: Test that your index contains multiple pages.
 		// Here is some sample code that tests your index, which assumes
 		// you have written a getCounts() method in Index, which returns
