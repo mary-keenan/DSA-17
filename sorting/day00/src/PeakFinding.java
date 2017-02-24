@@ -5,7 +5,7 @@ import java.util.Arrays;
  */
 public class PeakFinding {
 
-    public static int findOneDPeak(int[] nums){
+    public static int findOneDPeak(int[] nums){ //O(log(n)) runtime
         int peakIndex = checkMiddle(nums, 0, nums.length - 1);
 
         return peakIndex;
@@ -42,8 +42,19 @@ public class PeakFinding {
 
     public static int[] findTwoDPeak(int[][] nums){
     	// TODO
+
+
+
         int[] answer = {-1,-1};
         return answer;
+    }
+
+    public static int checkColumn (int[] nums) {
+        int index = 0;
+
+
+
+        return index;
     }
 
 }

@@ -105,11 +105,10 @@ public class SortTest {
             outputAL.add(i);
         for (int i: c)
             outputAL.add(i);
-//        int[] in = inputAL.stream().mapToInt(i -> i).toArray();
-//        int[] out = outputAL.stream().mapToInt(i -> i).toArray();
-//        quickSort.quickSort(in, a.length, a.length+b.length-1);
-//        assertArrayEquals(in, out);
-
+        int[] in = inputAL.stream().mapToInt(i -> i).toArray();
+        int[] out = outputAL.stream().mapToInt(i -> i).toArray();
+        quickSort.quickSort(in, a.length, a.length+b.length-1);
+        assertArrayEquals(in, out);
     }
 
     /**
