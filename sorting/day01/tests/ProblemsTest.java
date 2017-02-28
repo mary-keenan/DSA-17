@@ -29,6 +29,11 @@ public class ProblemsTest {
         assertTrue(Arrays.equals(Problems.runningMedian(emptyCase), Problems.runningMedianReallySlow(emptyCase)));
         assertTrue(Arrays.equals(Problems.runningMedian(oneCase), Problems.runningMedianReallySlow(oneCase)));
         assertTrue(Arrays.equals(Problems.runningMedian(twoCase), Problems.runningMedianReallySlow(twoCase)));
+//        double[] dumb = Problems.runningMedianReallySlow(fastCase);
+//        double[] tired = Problems.runningMedian(fastCase);
+//        for (int i = 0; i < dumb.length; i++) {
+//            System.out.println(dumb[i] == tired[i]);
+//        }
         assertTrue(Arrays.equals(Problems.runningMedian(fastCase), Problems.runningMedianReallySlow(fastCase)));
         assertTrue(Arrays.equals(Problems.runningMedian(slowCase), Problems.runningMedianReallySlow(slowCase)));
     }
