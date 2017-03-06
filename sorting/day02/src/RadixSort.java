@@ -24,13 +24,13 @@ public class RadixSort {
             L[i] = new LinkedList<>();
         }
         for (int i : A) {
-            // TODO: Extract the relevant digit from i, and add i to the corresponding Linked List.
+            // Extract the relevant digit from i, and add i to the corresponding Linked List.
             digit = getNthDigit(i, b, n);
             L[digit].add(i); //add number to that linked list (i.e. bucket 6 might have 623 and 645)
         }
         int index = 0;
         for (LinkedList<Integer> list : L) {
-            // TODO: Put all numbers in the linked lists into A
+            // Put all numbers in the linked lists into A
             for (int num: list) {
                 A[index] = num;
                 index++;
@@ -40,7 +40,7 @@ public class RadixSort {
 
     /**
      * TODO: Express your runtime in terms of n, b, and w
-     * Runtime: O(w*n) where does b fit in?
+     * Runtime: O(w*n) where does b fit in? Is it w*n / b? I just know runtime goes down if b gets bigger. Actually, I don't know that. I just think that.
      *
      * n: length of array
      * w: word length of integers A in base b (equal to log base b of k (log_b k) )
