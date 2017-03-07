@@ -118,61 +118,56 @@ public class BinarySearchTree<T extends Comparable<T>> {
         return null;
     }
 
-    private TreeNode<T> findPredecessor(TreeNode<T> n) { //worst runtime would be O(n) -- the list is sorted so tree is just a line and val is at the end
-        List<T> inOrderTraversal = inOrderTraversal(); //plus inOrderTraversal already takes O(n) time --> O(2n) is the worst
-        T nVal = n.key;
-        T lastVal = null;
-        for (int i = 0; i < inOrderTraversal.size(); i++) {
-            T currVal = inOrderTraversal.get(i);
-            if (currVal == nVal) {
-                if (i >= 1) {
-                    lastVal = inOrderTraversal.get(i - 1);
-                }
-                break;
-            }
-        }
-        if (lastVal != null) {
-            TreeNode<T> currNode = root;
-            for (int i = 0; i < inOrderTraversal.size(); i++) {
-                if (currNode.key == lastVal) {
-                    return currNode;
-                } else if (lastVal.compareTo(currNode.key) < 0) { //decide whether to go left or right
-                    currNode = currNode.leftChild;
-                } else {
-                    currNode = currNode.rightChild;
+    private TreeNode<T> findPredecessor(TreeNode<T> n) { //worst runtime would be O(logn)
+        TreeNode<T> pred = n;
+        if (n.hasLeftChild()) {
+            pred = n.leftChild;
+            if (pred.hasRightChild()) {
+                pred = pred.rightChild;
+                while (pred.hasRightChild()) {
+                    pred = pred.rightChild;
                 }
             }
+            return pred;
+        } else { //no left or right children -- go up to parents, same thing -- see what side of tree its on
+            while (pred.parent != null) { //while not root
+                pred = pred.parent;
+                if (n.key.compareTo(pred.key) > 0) {
+                    return pred;
+                }
+            }
+
         }
         return null;
     }
 
-    private TreeNode<T> findSuccessor(TreeNode<T> n) { //worst runtime would be O(2n); same as above
-        List<T> inOrderTraversal = inOrderTraversal();
-        T nVal = n.key;
-        T nextVal = null;
-        for (int i = 0; i < inOrderTraversal.size(); i++) {
-            T currVal = inOrderTraversal.get(i);
-            if (currVal == nVal) {
-                if (i < inOrderTraversal.size() - 1) {
-                    nextVal = inOrderTraversal.get(i + 1);
-                }
-                break;
-            }
-        }
-        if (nextVal != null) {
-            TreeNode<T> currNode = root;
+    private TreeNode<T> findSuccessor(TreeNode<T> n) { //worst runtime would be O(n -- or logn if implemented like predecessor)
+            List<T> inOrderTraversal = inOrderTraversal();
+            T nVal = n.key;
+            T nextVal = null;
             for (int i = 0; i < inOrderTraversal.size(); i++) {
-                if (currNode.key == nextVal) {
-                    return currNode;
-                } else if (nextVal.compareTo(currNode.key) < 0) { //decide whether to go left or right
-                    currNode = currNode.leftChild;
-                } else {
-                    currNode = currNode.rightChild;
+                T currVal = inOrderTraversal.get(i);
+                if (currVal == nVal) {
+                    if (i < inOrderTraversal.size() - 1) {
+                        nextVal = inOrderTraversal.get(i + 1);
+                    }
+                    break;
                 }
             }
+            if (nextVal != null) {
+                TreeNode<T> currNode = root;
+                for (int i = 0; i < inOrderTraversal.size(); i++) {
+                    if (currNode.key == nextVal) {
+                        return currNode;
+                    } else if (nextVal.compareTo(currNode.key) < 0) { //decide whether to go left or right
+                        currNode = currNode.leftChild;
+                    } else {
+                        currNode = currNode.rightChild;
+                    }
+                }
+            }
+            return null;
         }
-        return null;
-    }
 
     /**
      * Returns a node with the given key in the BST, or null if it doesn't exist.

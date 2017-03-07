@@ -40,9 +40,6 @@ public class Problems {
                 } else if (n1.leftChild.key == n2.rightChild.key && n1.rightChild.key == n2.leftChild.key) {//match, need switching
                     checkFurtherL = isIsomorphic(n1.leftChild, n2.rightChild);
                     checkFurtherR = isIsomorphic(n1.rightChild, n2.leftChild);
-                } else if (n1.rightChild.key == n2.leftChild.key && n1.leftChild.key == n2.rightChild.key) {
-                    checkFurtherL = isIsomorphic(n1.rightChild, n2.leftChild);
-                    checkFurtherR = isIsomorphic(n1.leftChild, n2.rightChild);
                 }
             } else if (n1.hasLeftChild() && n2.hasLeftChild() && !n1.hasRightChild() && !n2.hasRightChild()) {
                 if (n1.leftChild.key == n2.leftChild.key) {
