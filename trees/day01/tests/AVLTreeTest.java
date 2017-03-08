@@ -103,7 +103,8 @@ public class AVLTreeTest {
     private void assertValidAVL(TreeNode<Integer> node){
         if (node == null) return;
         assertTrue(Math.abs(height(node.leftChild) - height(node.rightChild)) <= 1);
-        assertThat(node.height, is(height(node)));
+        int bob = height(node);
+        assertThat(node.height, is(height(node))); //How am I failing this? They're lying
         assertValidBST(node);
         assertValidAVL(node.leftChild);
         assertValidAVL(node.rightChild);

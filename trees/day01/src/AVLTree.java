@@ -8,10 +8,8 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
         n = super.delete(n,key);
         if(n != null) {
             // TODO: Update height and balance tree
-            if (Math.abs(balanceFactor(n)) > 1) { //if tree is now unbalanced, we need to balance it
-                n = checkBalance(n, key);
-            }
-            n = adjustHeight(n, key);
+            n.height = 1 + Math.max(height(n.leftChild), height(n.rightChild));
+            n = balance(n);
         }
         return n;
     }
@@ -23,10 +21,8 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
         n = super.insert(n,key);
         if (n != null) {
             // TODO: update height and balance tree
-            if (Math.abs(balanceFactor(n)) > 1) { //if tree is now unbalanced, we need to balance it
-                n = checkBalance(n, key);
-            }
-            n = adjustHeight(n, key);
+            n.height = 1 + Math.max(height(n.leftChild), height(n.rightChild));
+            n = balance(n);
         }
         return n;
     }
@@ -45,23 +41,24 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
         }
     }
 
-    TreeNode<T> adjustHeight(TreeNode<T> node, T key) {
-        if (node.isLeaf()) { //base case -- can't balance leaf, start going back up, balancing as you go
-            node.height = 0;
-        } else { //only one side of tree was changed with insert -- this check reduces runtime from n to logn
-            if (node.key.compareTo(key) <= 0) { //key is to right of node, only need to balance that side
-                node.rightChild = adjustHeight(node.rightChild, key);
-                if (height(node.rightChild) >= height(node.leftChild)) { //only change it if new one is greater
-                    node.height = node.rightChild.height + 1;
-                }
-            } else {
-                node.leftChild = adjustHeight(node.leftChild, key);
-                if (height(node.leftChild) >= height(node.rightChild)) {
-                    node.height = node.leftChild.height + 1;
-                }            }
-        }
-        return node;
-    }
+//    TreeNode<T> adjustHeight(TreeNode<T> node, T key) {
+//        if (node.isLeaf()) { //base case -- can't balance leaf, start going back up, balancing as you go
+//            node.height = 0;
+//        } else { //only one side of tree was changed with insert -- this check reduces runtime from n to logn
+//            if (node.key.compareTo(key) <= 0) { //key is to right of node, only need to balance that side
+//                node.rightChild = adjustHeight(node.rightChild, key);
+//                if (height(node.rightChild) >= height(node.leftChild)) { //only change it if new one is greater
+//                    node.height = node.rightChild.height + 1;
+//                }
+//            } else {
+//                node.leftChild = adjustHeight(node.leftChild, key);
+//                if (height(node.leftChild) >= height(node.rightChild)) {
+//                    node.height = node.leftChild.height + 1;
+//                }
+//            }
+//        }
+//        return node;
+//    }
 
     /**
      * Delete the minimum descendant of the given node.
@@ -125,49 +122,23 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      * Perform a right rotation on node `n`. Return the head of the rotated tree.
      */
     private TreeNode<T> rotateRight(TreeNode<T> n) { //TODO: I wrote this
-        System.out.println("ROTATE RIGHT");
-        System.out.println(n.key);
-        if (n.hasLeftChild()) {
-            if (n.leftChild.hasRightChild()) {
-                TreeNode<T> newHead = n.leftChild;
-                TreeNode<T> problemChild = n.leftChild.rightChild; //move to n.left
-                n.leftChild.rightChild = n;
-                n.leftChild = problemChild;
-                newHead.height = n.height + 1;
-                n = newHead;
-            } else {
-                TreeNode<T> leftKid = n.leftChild;
-                n.leftChild = n;
-                n = leftKid;
-                n.height++;
-            }
-            return n;
-        }
-        return null;
+        TreeNode<T> newHead = n.leftChild;
+        n.leftChild = newHead.rightChild; //move child over, okay if null
+        newHead.rightChild = n; //replace child with n
+        n.height = 1 + Math.max(height(n.leftChild), height(n.rightChild));
+        newHead.height = 1 + Math.max(height(newHead.leftChild), height(newHead.rightChild));
+        return newHead;
     }
 
     /**
      * Perform a left rotation on node `n`. Return the head of the rotated tree.
      */
     private TreeNode<T> rotateLeft(TreeNode<T> n) { //TODO: I wrote this
-        System.out.println("ROTATE LEFT");
-        System.out.println(n.key);
-        if (n.hasRightChild()) {
-            if (n.rightChild.hasLeftChild()) {
-                TreeNode<T> newHead = n.rightChild;
-                TreeNode<T> problemChild = n.rightChild.leftChild; //move to n.right
-                n.rightChild.leftChild = n;
-                n.rightChild = problemChild;
-                newHead.height = n.height + 1;
-                n = newHead;
-            } else { //n.right doesn't have a left child
-                TreeNode<T> rightKid = n.rightChild;
-                n.rightChild = n;
-                n = rightKid;
-                n.height++;
-            }
-            return n;
-        }
-        return null;
+        TreeNode<T> newHead = n.rightChild;
+        n.rightChild = newHead.leftChild; //move child over, okay if null
+        newHead.leftChild = n; //replace child with n
+        n.height = 1 + Math.max(height(n.leftChild), height(n.rightChild));
+        newHead.height = 1 + Math.max(height(newHead.leftChild), height(newHead.rightChild));
+        return newHead;
     }
 }
