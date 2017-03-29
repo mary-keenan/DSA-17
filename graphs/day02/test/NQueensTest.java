@@ -48,7 +48,7 @@ public class NQueensTest {
 
     private void assertValidSolutions(List<char[][]> solutions, int expectedLength) {
         // check that all solutions are unique
-        assertThat((new HashSet<>(solutions)).size(), is(solutions.size()));
+        assertThat((new HashSet<>(solutions)).size(), is(solutions.size())); //TODO: failing because I only have one unique board (all '.')
         assertThat(solutions.size(), is(expectedLength));
         for (char[][] board : solutions)
             assertTrue(validBoard(board));
