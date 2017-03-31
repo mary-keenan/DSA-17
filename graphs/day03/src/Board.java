@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,12 +10,15 @@ public class Board {
     private int n;
     public int[][] tiles;
     private int[][] goal = {{1, 2, 3}, {4, 5, 6}, {7, 8, 0}};
+    public int[][] goalPoints = {{2,2},{0,0},{0,1},{0,2},{1,0},{1,1},{1,2},{2,0},{2,1}}; //index is key; 0 is actually where 9 would go
+    public int[] blankPoint = {0,0};
 
     /*
      * Set the global board size and tile state
      */
     public Board(int[][] b) {
         // TODO: Your code here
+        tiles = b;
     }
 
     /*
@@ -23,7 +27,7 @@ public class Board {
      */
     private int size() {
     	// TODO: Your code here
-        return 0;
+        return tiles.length;
     }
 
     /*
@@ -32,7 +36,21 @@ public class Board {
      */
     public int manhattan() {
 		// TODO: Your code here
-        return 0;
+        int sum = 0;
+        for (int row = 0; row < size(); row++) {
+            for (int col = 0; col < size(); col++) {
+                int num = tiles[row][col];
+                if (num != 0) { //don't want no zeroes in here
+                    int[] goalPoint = goalPoints[num];
+                    int horizontalDist = row - goalPoint[0];
+                    int verticalDist = col - goalPoint[1];
+                    sum += horizontalDist + verticalDist;
+                } else {
+                    blankPoint = new int[]{row, col};
+                }
+            }
+        }
+        return sum;
     }
 
     /*
@@ -40,7 +58,14 @@ public class Board {
      */
     public boolean isGoal() {
     	// TODO: Your code here
-        return false;
+        for (int row = 0; row < size(); row++) {
+            for (int col = 0; col < size(); col++) {
+                if (tiles[row][col] != goal[row][col]) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /*
@@ -59,6 +84,10 @@ public class Board {
      */
     public Iterable<Board> neighbors() {
     	// TODO: Your code here
+
+        //check up
+
+        int[][] duplicateTiles = copyOf(tiles); //TODO: copy copyOf
         return null;
     }
 

@@ -3,7 +3,7 @@ import java.util.List;
 
 public class CoinsOnAClock {
 
-    private static char[] copyOf(char[] A) { //TODO: check to make sure tweak ([][] --> []) didn't break it
+    private static char[] copyOf(char[] A) {
         char[] B = new char[A.length];
         for (int i = 0; i < A.length; i++)
             B[i] = A[i];
@@ -50,7 +50,7 @@ public class CoinsOnAClock {
         return allClocks;
     }
 
-    public static Integer calcNewHour(char[] clockBoard, int currHour, int coinVal) { //TODO: works
+    public static Integer calcNewHour(char[] clockBoard, int currHour, int coinVal) {
         int newHour = currHour + coinVal;
         if (newHour >= clockBoard.length) {
             newHour = newHour % clockBoard.length;
