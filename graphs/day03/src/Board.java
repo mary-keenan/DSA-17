@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -73,6 +74,10 @@ public class Board {
      */
     public boolean solvable() {
     	// TODO: Your code here
+        // A pair of tiles form an inversion if the the values on tiles are in reverse order of their appearance in goal state.
+        // It is not possible to solve an instance of 8 puzzle if number of inversions is odd in the input state.
+
+//            return !(inversions % 2 == 1);
         return false;
     }
 
@@ -84,10 +89,11 @@ public class Board {
      */
     public Iterable<Board> neighbors() {
     	// TODO: Your code here
+        HashSet<Board> neighbors = new HashSet<>();
 
         //check up
 
-        int[][] duplicateTiles = copyOf(tiles); //TODO: copy copyOf
+//        int[][] duplicateTiles = copyOf(tiles); //TODO: copy copyOf
         return null;
     }
 
@@ -127,12 +133,23 @@ public class Board {
         return true;
     }
 
+    /**
+     * Creates a deep copy of the input array and returns it
+     */
+    private static int[][] copyOf(int[][] A) {
+        int[][] B = new int[A.length][A[0].length];
+        for (int i = 0; i < A.length; i++)
+            System.arraycopy(A[i], 0, B[i], 0, A[0].length);
+        return B;
+    }
+
     public static void main(String[] args) {
         // DEBUG - Your solution can include whatever output you find useful
         int[][] initState = {{1, 2, 3}, {4, 0, 6}, {7, 8, 5}};
         Board board = new Board(initState);
-
         board.printBoard();
+//        Board copy = new Board (copyOf(board.tiles));
+//        copy.printBoard();
         System.out.println("Size: " + board.size());
         System.out.println("Solvable: " + board.solvable());
         System.out.println("Manhattan: " + board.manhattan());

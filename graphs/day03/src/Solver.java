@@ -52,7 +52,11 @@ public class Solver {
      */
     private State root(State state) {
     	// TODO: Your code here
-        return null;
+        State s = state;
+        while (s.prev != null) {
+            s = s.prev;
+        }
+        return s;
     }
 
     /*
@@ -69,7 +73,7 @@ public class Solver {
      */
     public boolean isSolvable() {
     	// TODO: Your code here
-        return false;
+        return true;
     }
 
     /*
