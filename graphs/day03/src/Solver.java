@@ -69,35 +69,25 @@ public class Solver {
     	// TODO: Your code here
         this.currBoard = initial;
         HashSet<State> availableStates = new HashSet<>(); //store States we haven't been to yet
+        HashSet<State> closedStates = new HashSet<>();
         State startState = new State(initial, 0, null);
         availableStates.add(startState); //make sure list isn't empty to start with
 
         while (availableStates.size() != 0) {
-            int lowestCost = 0;
-            State nearestState = startState;
             //GET CLOSEST STATE
-            for (State state: availableStates) {
-                if (lowestCost == 0 || state.cost < lowestCost) {
-                    nearestState = state;
-                    lowestCost = nearestState.cost;
-                }
-            }
+            State nearestState = Collections.min(availableStates);
+            availableStates.remove(nearestState);
 
-//            for (int[] row: nearestState.board.tiles) {
-//                for (int item: row) {
-//                    System.out.print(item);
-//                }
-//                System.out.println();
-//            }
-//            System.out.println();
 
             //GET NEIGHBOR FRIENDS
             List<Board> neighborFriends = (List<Board>) nearestState.board.neighbors();
             for (Board neighbor: neighborFriends) {
                 State neighborState = new State(neighbor, nearestState.moves + 1, nearestState);
-                availableStates.add(neighborState);
+                if (!closedStates.contains(neighborState)) {
+                    availableStates.add(neighborState);
+                }
             }
-            availableStates.remove(nearestState);
+            closedStates.add(nearestState);
 
             //CHECK IF GOAL
             if (nearestState.board.isGoal()) {

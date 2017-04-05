@@ -120,7 +120,6 @@ public class PuzzleTest {
         assertThat(solver.minMoves, is(16));
     }
 
-
     @Test
     public void testSolverSuperDuperHard() {
 
