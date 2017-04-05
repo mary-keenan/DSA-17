@@ -10,6 +10,7 @@ public class Solver {
     public int minMoves = -1;
     private State solutionState;
     private boolean solved = false;
+    private Board currBoard;
 
     /**
      * State class to make the cost calculations simple
@@ -27,7 +28,7 @@ public class Solver {
             this.moves = moves;
             this.prev = prev;
             // TODO: Compute cost of board state according to A*
-            cost = 0;
+            cost = this.moves + this.board.manhattan();
         }
 
         @Override
@@ -51,7 +52,7 @@ public class Solver {
      * Return the root state of a given state
      */
     private State root(State state) {
-    	// TODO: Your code here
+    	// TODO: Uma's code here
         State s = state;
         while (s.prev != null) {
             s = s.prev;
@@ -66,6 +67,45 @@ public class Solver {
      */
     public Solver(Board initial) {
     	// TODO: Your code here
+        this.currBoard = initial;
+        HashSet<State> availableStates = new HashSet<>(); //store States we haven't been to yet
+        State startState = new State(initial, 0, null);
+        availableStates.add(startState); //make sure list isn't empty to start with
+
+        while (availableStates.size() != 0) {
+            int lowestCost = 0;
+            State nearestState = startState;
+            //GET CLOSEST STATE
+            for (State state: availableStates) {
+                if (lowestCost == 0 || state.cost < lowestCost) {
+                    nearestState = state;
+                    lowestCost = nearestState.cost;
+                }
+            }
+
+//            for (int[] row: nearestState.board.tiles) {
+//                for (int item: row) {
+//                    System.out.print(item);
+//                }
+//                System.out.println();
+//            }
+//            System.out.println();
+
+            //GET NEIGHBOR FRIENDS
+            List<Board> neighborFriends = (List<Board>) nearestState.board.neighbors();
+            for (Board neighbor: neighborFriends) {
+                State neighborState = new State(neighbor, nearestState.moves + 1, nearestState);
+                availableStates.add(neighborState);
+            }
+            availableStates.remove(nearestState);
+
+            //CHECK IF GOAL
+            if (nearestState.board.isGoal()) {
+                minMoves = nearestState.moves;
+                solutionState = nearestState;
+                availableStates.clear();
+            }
+        }
     }
 
     /*
@@ -73,7 +113,7 @@ public class Solver {
      */
     public boolean isSolvable() {
     	// TODO: Your code here
-        return true;
+        return this.currBoard.solvable(currBoard.tiles);
     }
 
     /*
@@ -81,8 +121,52 @@ public class Solver {
      */
     public Iterable<Board> solution() {
     	// TODO: Your code here
-        return null;
-    }
+//        HashSet<State> availableStates = new HashSet<>(); //store States we haven't been to yet
+//        ArrayList<Board> solutionsList = new ArrayList(); //add to once we've reached goal State
+//        if (!isSolvable()) {
+//            return null;
+//        }
+//        State startState = new State(this.currBoard, 0, null);
+//        availableStates.add(startState); //make sure list isn't empty to start with
+//
+//
+//        while (availableStates.size() != 0) {
+//            int lowestCost = 0;
+//            State nearestState = startState;
+//            //GET CLOSEST STATE
+//            for (State state: availableStates) {
+//                if (lowestCost == 0 || state.cost < lowestCost) {
+//                    nearestState = state;
+//                    lowestCost = nearestState.cost;
+//                }
+//            }
+        //CHECK IF GOAL
+        List<Board> solutionsList = new ArrayList<>();
+        while (solutionState.prev != null) {
+            solutionsList.add(0, solutionState.board);
+            solutionState = solutionState.prev;
+        }
+        return solutionsList;
+        }
+
+//            for (int[] row: nearestState.board.tiles) {
+//                for (int item: row) {
+//                    System.out.print(item);
+//                }
+//                System.out.println();
+//            }
+//            System.out.println();
+//
+//            //GET NEIGHBOR FRIENDS
+//            List<Board> neighborFriends = (List<Board>) nearestState.board.neighbors();
+//            for (Board neighbor: neighborFriends) {
+//                State neighborState = new State(neighbor, nearestState.moves + 1, nearestState);
+//                availableStates.add(neighborState);
+//            }
+//            availableStates.remove(nearestState);
+//        }
+//        return null;
+//    }
 
     public State find(Iterable<State> iter, Board b) {
         for (State s : iter) {

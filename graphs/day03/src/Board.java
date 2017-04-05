@@ -1,7 +1,7 @@
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Board definition for the 8 Puzzle challenge
@@ -72,13 +72,20 @@ public class Board {
     /*
      * Returns true if the board is solvable
      */
-    public boolean solvable() {
+    public boolean solvable(int[][] board) { //TODO: *** WE ADDED THE PARAMETER HERE ***
     	// TODO: Your code here
         // A pair of tiles form an inversion if the the values on tiles are in reverse order of their appearance in goal state.
         // It is not possible to solve an instance of 8 puzzle if number of inversions is odd in the input state.
-
-//            return !(inversions % 2 == 1);
-        return false;
+        int[] tilesArr = boardToArray(board);
+        int inversions = 0;
+        for (int i = 0; i < tilesArr.length; i++) {
+            for (int j = i + 1; j < tilesArr.length; j++) {
+                if (tilesArr[i] > tilesArr[j]) {
+                    inversions++;
+                }
+            }
+        }
+        return (inversions % 2 == 0);
     }
 
     /*
@@ -89,12 +96,57 @@ public class Board {
      */
     public Iterable<Board> neighbors() {
     	// TODO: Your code here
-        HashSet<Board> neighbors = new HashSet<>();
+        ArrayList<Board> neighborFriends = new ArrayList<>();
+        int blankX = blankPoint[0];
+        int blankY = blankPoint[1];
 
         //check up
+        if (blankY > 0) {
+            int[][] duplicateTilesUp = copyOf(tiles);
+            int swapVal = duplicateTilesUp[blankX][blankY - 1];
+            duplicateTilesUp[blankX][blankY - 1] = 0;
+            duplicateTilesUp[blankX][blankY] = swapVal;
+            if (solvable(duplicateTilesUp)){
+                Board boardUp = new Board(duplicateTilesUp);
+                neighborFriends.add(boardUp);
+            }
+        }
 
-//        int[][] duplicateTiles = copyOf(tiles); //TODO: copy copyOf
-        return null;
+        //check left
+        if (blankX > 0) {
+            int[][] duplicateTilesLeft = copyOf(tiles);
+            int swapVal = duplicateTilesLeft[blankX - 1][blankY];
+            duplicateTilesLeft[blankX - 1][blankY] = 0;
+            duplicateTilesLeft[blankX][blankY] = swapVal;
+            if (solvable(duplicateTilesLeft)){
+                Board boardLeft = new Board(duplicateTilesLeft);
+                neighborFriends.add(boardLeft);            }
+        }
+
+        //check down
+        if (blankY < 2) {
+            int[][] duplicateTilesDown = copyOf(tiles);
+            int swapVal = duplicateTilesDown[blankX][blankY + 1];
+            duplicateTilesDown[blankX][blankY + 1] = 0;
+            duplicateTilesDown[blankX][blankY] = swapVal;
+            if (solvable(duplicateTilesDown)){
+                Board boardDown = new Board(duplicateTilesDown);
+                neighborFriends.add(boardDown);
+            }
+        }
+
+        //check right
+        if (blankX < 2) {
+            int[][] duplicateTilesRight = copyOf(tiles);
+            int swapVal = duplicateTilesRight[blankX + 1][blankY];
+            duplicateTilesRight[blankX + 1][blankY] = 0;
+            duplicateTilesRight[blankX][blankY] = swapVal;
+            if (solvable(duplicateTilesRight)){
+                Board boardRight = new Board(duplicateTilesRight);
+                neighborFriends.add(boardRight);
+            }
+        }
+        return neighborFriends;
     }
 
     /*
@@ -143,6 +195,21 @@ public class Board {
         return B;
     }
 
+    private static int[] boardToArray(int[][] A) {
+        // put in separate array for solvable method
+        int i = 0;
+        int [] tilesArr = new int[A.length * A.length];
+        for (int[] row: A) {
+            for (int item: row) {
+                if (item != 0) {
+                    tilesArr[i] = item;
+                    i++;
+                }
+            }
+        }
+        return tilesArr;
+    }
+
     public static void main(String[] args) {
         // DEBUG - Your solution can include whatever output you find useful
         int[][] initState = {{1, 2, 3}, {4, 0, 6}, {7, 8, 5}};
@@ -151,7 +218,7 @@ public class Board {
 //        Board copy = new Board (copyOf(board.tiles));
 //        copy.printBoard();
         System.out.println("Size: " + board.size());
-        System.out.println("Solvable: " + board.solvable());
+        System.out.println("Solvable: " + board.solvable(board.tiles)); //TODO: *** ADDED PARAMETER ***
         System.out.println("Manhattan: " + board.manhattan());
         System.out.println("Is goal: " + board.isGoal());
         System.out.println("Neighbors:");
