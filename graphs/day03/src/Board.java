@@ -43,8 +43,8 @@ public class Board {
                 int num = tiles[row][col];
                 if (num != 0) { //don't want no zeroes in here
                     int[] goalPoint = goalPoints[num];
-                    int horizontalDist = row - goalPoint[0];
-                    int verticalDist = col - goalPoint[1];
+                    int horizontalDist = Math.abs(row - goalPoint[0]);
+                    int verticalDist = Math.abs(col - goalPoint[1]);
                     sum += horizontalDist + verticalDist;
                 } else {
                     blankPoint = new int[]{row, col};
