@@ -27,7 +27,6 @@ public class Solver {
             this.board = board;
             this.moves = moves;
             this.prev = prev;
-            // TODO: Compute cost of board state according to A*
             cost = this.moves + this.board.manhattan();
         }
 
@@ -52,7 +51,6 @@ public class Solver {
      * Return the root state of a given state
      */
     private State root(State state) {
-    	// TODO: Uma's code here
         State s = state;
         while (s.prev != null) {
             s = s.prev;
@@ -66,54 +64,54 @@ public class Solver {
      * and a identify the shortest path to the the goal state
      */
     public Solver(Board initial) {
-    	// TODO: Your code here
-        this.currBoard = initial; //TODO: WHY DO WE UPDATE THIS IF WE AREN'T GOING TO USE IT?
-        HashSet<State> availableStates = new HashSet<>(); //store States we haven't been to yet
-        HashSet<State> closedStates = new HashSet<>();
-        State startState = new State(initial, 0, null);
-        availableStates.add(startState); //make sure list isn't empty to start with
+        this.currBoard = initial;
+        if (isSolvable()) {
+            HashSet<State> availableStates = new HashSet<>(); //store States we haven't been to yet
+            HashSet<State> closedStates = new HashSet<>();
+            State startState = new State(initial, 0, null);
+            availableStates.add(startState); //make sure list isn't empty to start with
 
-        while (availableStates.size() != 0) {
-            //GET CLOSEST STATE AND POP IT
-            State nearestState = Collections.min(availableStates);
-            availableStates.remove(nearestState);
+            while (availableStates.size() != 0) {
+                //GET CLOSEST STATE AND POP IT
+                State nearestState = Collections.min(availableStates);
+                availableStates.remove(nearestState);
 
-            //GET NEIGHBOR FRIENDS
-            List<Board> neighborFriends = (List<Board>) nearestState.board.neighbors();
-            for (Board neighbor: neighborFriends) {
-                State neighborState = new State(neighbor, nearestState.moves + 1, nearestState);
-                boolean ignore = false;
-                //CHECK IF GOAL
-                if (neighborState.board.isGoal()) {
-                    minMoves = neighborState.moves;
-                    solutionState = neighborState;
-                    availableStates.clear();
-                    ignore = true;
-                }
-                for (State openState: availableStates) {
-                    if (openState.equals(neighborState) && openState.cost < neighborState.cost) {
+                //GET NEIGHBOR FRIENDS
+                List<Board> neighborFriends = (List<Board>) nearestState.board.neighbors();
+                for (Board neighbor : neighborFriends) {
+                    State neighborState = new State(neighbor, nearestState.moves + 1, nearestState);
+                    boolean ignore = false;
+                    //CHECK IF GOAL
+                    if (neighborState.board.isGoal()) {
+                        minMoves = neighborState.moves;
+                        solutionState = neighborState;
+                        availableStates.clear();
                         ignore = true;
                     }
-                }
-                for (State closedState: closedStates) {
-                    if (closedState.equals(neighborState) && closedState.cost < neighborState.cost) {
-                        ignore = true;
+                    for (State openState : availableStates) {
+                        if (openState.equals(neighborState) && openState.cost < neighborState.cost) {
+                            ignore = true;
+                        }
+                    }
+                    for (State closedState : closedStates) {
+                        if (closedState.equals(neighborState) && closedState.cost < neighborState.cost) {
+                            ignore = true;
+                        }
+                    }
+                    if (!ignore) {
+                        availableStates.add(neighborState);
                     }
                 }
-                if (!ignore) {
-                    availableStates.add(neighborState);
-                }
+                closedStates.add(nearestState);
             }
-            closedStates.add(nearestState);
+            solved = true;
         }
-        solved = true;
     }
 
     /*
      * Is the input board a solvable state
      */
     public boolean isSolvable() {
-    	// TODO: Your code here
         return this.currBoard.solvable(currBoard.tiles);
     }
 
@@ -121,7 +119,6 @@ public class Solver {
      * Return the sequence of boards in a shortest solution, null if unsolvable
      */
     public Iterable<Board> solution() {
-    	// TODO: Your code here
         //CHECK IF GOAL
         List<Board> solutionsList = new ArrayList<>();
         while (solutionState.prev != null) {

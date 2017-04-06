@@ -1,8 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-
 import static java.lang.Math.abs;
 
 /**
@@ -20,9 +16,8 @@ public class Board {
      * Set the global board size and tile state
      */
     public Board(int[][] b) {
-        // TODO: Your code here
         tiles = b;
-        n = tiles.length; //TODO: not sure about this -- based on how it's used in equals method below
+        n = tiles.length;
     }
 
     /*
@@ -30,7 +25,6 @@ public class Board {
      * class should  work for any puzzle size)
      */
     private int size() {
-    	// TODO: Your code here
         return tiles.length;
     }
 
@@ -39,7 +33,6 @@ public class Board {
      * Estimated cost from the current node to the goal for A* (h(n))
      */
     public int manhattan() {
-		// TODO: Your code here
         int sum = 0;
         for (int row = 0; row < size(); row++) {
             for (int col = 0; col < size(); col++) {
@@ -61,7 +54,6 @@ public class Board {
      * Compare the current state to the goal state
      */
     public boolean isGoal() {
-    	// TODO: Your code here
         for (int row = 0; row < size(); row++) {
             for (int col = 0; col < size(); col++) {
                 if (tiles[row][col] != goal[row][col]) {
@@ -75,8 +67,7 @@ public class Board {
     /*
      * Returns true if the board is solvable
      */
-    public boolean solvable(int[][] board) { //TODO: *** WE ADDED THE PARAMETER HERE ***
-    	// TODO: Your code here
+    public boolean solvable(int[][] board) {
         // A pair of tiles form an inversion if the the values on tiles are in reverse order of their appearance in goal state.
         // It is not possible to solve an instance of 8 puzzle if number of inversions is odd in the input state.
         int[] tilesArr = boardToArray(board);
@@ -98,7 +89,6 @@ public class Board {
      * is valid, add it to an accumulator.
      */
     public Iterable<Board> neighbors() {
-    	// TODO: Your code here
         ArrayList<Board> neighborFriends = new ArrayList<>();
         int blankX = blankPoint[0];
         int blankY = blankPoint[1];
@@ -109,10 +99,8 @@ public class Board {
             int swapVal = duplicateTilesUp[blankX][blankY - 1];
             duplicateTilesUp[blankX][blankY - 1] = 0;
             duplicateTilesUp[blankX][blankY] = swapVal;
-            if (solvable(duplicateTilesUp)){
-                Board boardUp = new Board(duplicateTilesUp);
-                neighborFriends.add(boardUp);
-            }
+            Board boardUp = new Board(duplicateTilesUp);
+            neighborFriends.add(boardUp);
         }
 
         //check left
@@ -121,9 +109,8 @@ public class Board {
             int swapVal = duplicateTilesLeft[blankX - 1][blankY];
             duplicateTilesLeft[blankX - 1][blankY] = 0;
             duplicateTilesLeft[blankX][blankY] = swapVal;
-            if (solvable(duplicateTilesLeft)){
-                Board boardLeft = new Board(duplicateTilesLeft);
-                neighborFriends.add(boardLeft);            }
+            Board boardLeft = new Board(duplicateTilesLeft);
+            neighborFriends.add(boardLeft);
         }
 
         //check down
@@ -132,10 +119,8 @@ public class Board {
             int swapVal = duplicateTilesDown[blankX][blankY + 1];
             duplicateTilesDown[blankX][blankY + 1] = 0;
             duplicateTilesDown[blankX][blankY] = swapVal;
-            if (solvable(duplicateTilesDown)){
-                Board boardDown = new Board(duplicateTilesDown);
-                neighborFriends.add(boardDown);
-            }
+            Board boardDown = new Board(duplicateTilesDown);
+            neighborFriends.add(boardDown);
         }
 
         //check right
@@ -144,10 +129,8 @@ public class Board {
             int swapVal = duplicateTilesRight[blankX + 1][blankY];
             duplicateTilesRight[blankX + 1][blankY] = 0;
             duplicateTilesRight[blankX][blankY] = swapVal;
-            if (solvable(duplicateTilesRight)){
-                Board boardRight = new Board(duplicateTilesRight);
-                neighborFriends.add(boardRight);
-            }
+            Board boardRight = new Board(duplicateTilesRight);
+            neighborFriends.add(boardRight);
         }
         return neighborFriends;
     }
@@ -221,7 +204,7 @@ public class Board {
 //        Board copy = new Board (copyOf(board.tiles));
 //        copy.printBoard();
         System.out.println("Size: " + board.size());
-        System.out.println("Solvable: " + board.solvable(board.tiles)); //TODO: *** ADDED PARAMETER ***
+        System.out.println("Solvable: " + board.solvable(board.tiles));
         System.out.println("Manhattan: " + board.manhattan());
         System.out.println("Is goal: " + board.isGoal());
         System.out.println("Neighbors:");
