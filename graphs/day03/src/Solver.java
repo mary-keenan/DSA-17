@@ -67,14 +67,14 @@ public class Solver {
      */
     public Solver(Board initial) {
     	// TODO: Your code here
-        this.currBoard = initial;
+        this.currBoard = initial; //TODO: WHY DO WE UPDATE THIS IF WE AREN'T GOING TO USE IT?
         HashSet<State> availableStates = new HashSet<>(); //store States we haven't been to yet
         HashSet<State> closedStates = new HashSet<>();
         State startState = new State(initial, 0, null);
         availableStates.add(startState); //make sure list isn't empty to start with
 
         while (availableStates.size() != 0) {
-            //GET CLOSEST STATE
+            //GET CLOSEST STATE AND POP IT
             State nearestState = Collections.min(availableStates);
             availableStates.remove(nearestState);
 
@@ -82,17 +82,31 @@ public class Solver {
             List<Board> neighborFriends = (List<Board>) nearestState.board.neighbors();
             for (Board neighbor: neighborFriends) {
                 State neighborState = new State(neighbor, nearestState.moves + 1, nearestState);
+                boolean ignore = false;
                 //CHECK IF GOAL
                 if (neighborState.board.isGoal()) {
                     minMoves = neighborState.moves;
                     solutionState = neighborState;
                     availableStates.clear();
-                } else if (!closedStates.contains(neighborState)) {
+                    ignore = true;
+                }
+                for (State openState: availableStates) {
+                    if (openState.equals(neighborState) && openState.cost < neighborState.cost) {
+                        ignore = true;
+                    }
+                }
+                for (State closedState: closedStates) {
+                    if (closedState.equals(neighborState) && closedState.cost < neighborState.cost) {
+                        ignore = true;
+                    }
+                }
+                if (!ignore) {
                     availableStates.add(neighborState);
                 }
             }
             closedStates.add(nearestState);
         }
+        solved = true;
     }
 
     /*
@@ -108,25 +122,6 @@ public class Solver {
      */
     public Iterable<Board> solution() {
     	// TODO: Your code here
-//        HashSet<State> availableStates = new HashSet<>(); //store States we haven't been to yet
-//        ArrayList<Board> solutionsList = new ArrayList(); //add to once we've reached goal State
-//        if (!isSolvable()) {
-//            return null;
-//        }
-//        State startState = new State(this.currBoard, 0, null);
-//        availableStates.add(startState); //make sure list isn't empty to start with
-//
-//
-//        while (availableStates.size() != 0) {
-//            int lowestCost = 0;
-//            State nearestState = startState;
-//            //GET CLOSEST STATE
-//            for (State state: availableStates) {
-//                if (lowestCost == 0 || state.cost < lowestCost) {
-//                    nearestState = state;
-//                    lowestCost = nearestState.cost;
-//                }
-//            }
         //CHECK IF GOAL
         List<Board> solutionsList = new ArrayList<>();
         while (solutionState.prev != null) {
@@ -134,26 +129,7 @@ public class Solver {
             solutionState = solutionState.prev;
         }
         return solutionsList;
-        }
-
-//            for (int[] row: nearestState.board.tiles) {
-//                for (int item: row) {
-//                    System.out.print(item);
-//                }
-//                System.out.println();
-//            }
-//            System.out.println();
-//
-//            //GET NEIGHBOR FRIENDS
-//            List<Board> neighborFriends = (List<Board>) nearestState.board.neighbors();
-//            for (Board neighbor: neighborFriends) {
-//                State neighborState = new State(neighbor, nearestState.moves + 1, nearestState);
-//                availableStates.add(neighborState);
-//            }
-//            availableStates.remove(nearestState);
-//        }
-//        return null;
-//    }
+    }
 
     public State find(Iterable<State> iter, Board b) {
         for (State s : iter) {

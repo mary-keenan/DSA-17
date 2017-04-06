@@ -22,6 +22,7 @@ public class Board {
     public Board(int[][] b) {
         // TODO: Your code here
         tiles = b;
+        n = tiles.length; //TODO: not sure about this -- based on how it's used in equals method below
     }
 
     /*
