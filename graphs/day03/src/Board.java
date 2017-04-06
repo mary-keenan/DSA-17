@@ -3,6 +3,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 
+import static java.lang.Math.abs;
+
 /**
  * Board definition for the 8 Puzzle challenge
  */
@@ -43,8 +45,8 @@ public class Board {
                 int num = tiles[row][col];
                 if (num != 0) { //don't want no zeroes in here
                     int[] goalPoint = goalPoints[num];
-                    int horizontalDist = Math.abs(row - goalPoint[0]);
-                    int verticalDist = Math.abs(col - goalPoint[1]);
+                    int horizontalDist = abs(row - goalPoint[0]);
+                    int verticalDist = abs(col - goalPoint[1]);
                     sum += horizontalDist + verticalDist;
                 } else {
                     blankPoint = new int[]{row, col};
