@@ -42,6 +42,8 @@ public class BarnRepairTest {
 
             if (solution != answers[t]) {
                 System.out.println(" fails");
+                System.out.println(solution);
+                System.out.println(answers[t]);
                 passed = false;
             } else {
                 System.out.println(" passes");
