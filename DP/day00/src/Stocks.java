@@ -23,11 +23,14 @@ public class Stocks {
                 streak = false;
             } //if the difference is 0, it doesn't matter if we're on a streak or not
         }
+        if (currProfit > maxProfit) {
+            maxProfit = currProfit;
+        }
 
         return maxProfit;
     }
 
-    public static int maxProfitWithK(int[] prices, int k) {
+    public int maxProfitWithK(int[] prices, int k) {
         // TODO: Optional
         return -1;
     }

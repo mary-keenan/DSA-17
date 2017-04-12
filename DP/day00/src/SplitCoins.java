@@ -3,7 +3,7 @@ import java.util.*;
 public class SplitCoins {
 
     public int splitCoins(int[] coins) { //TODO: took away the static part -- it wouldn't let me call pickCoin
-        ArrayList coinsLeft = new ArrayList();
+        ArrayList coinsLeft = new ArrayList(); //TODO: doesn't seem to include first element of testcase FML
         for (int coin: coins) {
             coinsLeft.add(coin);
         }
