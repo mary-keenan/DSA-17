@@ -21,7 +21,6 @@ public class BillsNeededTest {
                     "testcases/change." + i + ".in"));
             Scanner output = new Scanner(new File(
                     "testcases/change." + i + ".out"));
-            System.out.println(i);
 
             int target = input.nextInt();
             int n = input.nextInt();

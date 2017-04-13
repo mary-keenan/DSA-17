@@ -27,40 +27,34 @@ public class SplitCoins {
             }
             return Math.abs(sum1 - sum2);
         }
+
         //iterate through coins -- look at all possibilities
-        ArrayList pile1 = piles.get(0); //see what would happen if you added the coin to pile1 vs pile2
-        ArrayList pile2 = piles.get(1);
         int diff = 0;
         for (int coin: new ArrayList<>(coinsLeft)) { //TODO: put in for loop? Becomes difficult to differentiate between piles
+            for (int pileNum = 0; pileNum < piles.size(); pileNum++) {
+                ArrayList pile1 = new ArrayList(piles.get(0));
+                ArrayList pile2 = new ArrayList(piles.get(1));
 
-            pile1.add(coin);
-            coinsLeft.remove((Object) coin); //cast as an object so it knows it's not an index
+                if (pileNum == 0) pile1.add(coin); //TODO: check
+                else pile2.add(coin);
 
-            //check to see if already memoized
-            ArrayList key = putPilesInKey(pile1, pile2);
-            if (pilesOutcomeMap.get(key) != null && pilesOutcomeMap.get(key) < minDiff) { //already exists and is lower
-                diff = pilesOutcomeMap.get(key); //update minDiff value with new, lower value
-            } else if (pilesOutcomeMap.get(key) == null){
-                diff = pickCoin(coinsLeft, key, pilesOutcomeMap);
-                pilesOutcomeMap.put(key, diff);
+                coinsLeft.remove((Object) coin); //cast as an object so it knows it's not an index
+
+                //check to see if already memoized
+                ArrayList key = putPilesInKey(pile1, pile2);
+                if (pilesOutcomeMap.get(key) != null && pilesOutcomeMap.get(key) < minDiff) { //already exists and is lower
+                    diff = pilesOutcomeMap.get(key); //update minDiff value with new, lower value
+                } else if (pilesOutcomeMap.get(key) == null){
+                    diff = pickCoin(coinsLeft, key, pilesOutcomeMap);
+                    pilesOutcomeMap.put(new ArrayList<>(key), diff);
+                }
+                if (diff < minDiff) minDiff = diff;
+
+                if (pileNum == 0) pile1.remove((Object) coin);
+                else pile2.remove((Object) coin);
+
+                coinsLeft.add(coin);
             }
-            if (diff < minDiff) minDiff = diff;
-
-            pile1.remove((Object) coin);
-            pile2.add(coin);
-
-            //check to see if already memoized
-            key = putPilesInKey(pile1, pile2);
-            if (pilesOutcomeMap.get(key) != null && pilesOutcomeMap.get(key) < minDiff) { //already exists and is lower
-                diff = pilesOutcomeMap.get(key); //update minDiff value with new, lower value
-            } else if (pilesOutcomeMap.get(key) == null){
-                diff = pickCoin(coinsLeft, key, pilesOutcomeMap);
-                pilesOutcomeMap.put(key, diff);
-            }
-            if (diff < minDiff) minDiff = diff;
-
-            pile2.remove((Object) coin);
-            coinsLeft.add(coin);
         }
 
         return minDiff;
@@ -70,9 +64,9 @@ public class SplitCoins {
         ArrayList pilesKey = new ArrayList();
         Collections.sort(pile1); //TODO: probably bad for runtime -- need to be able to compare to dict keys regardless of order
         Collections.sort(pile2);
-        pilesKey.add(pile1);
         pilesKey.add(pile2);
-        return  pilesKey;
+        pilesKey.add(0, pile1);
+        return pilesKey;
     }
 
 }
