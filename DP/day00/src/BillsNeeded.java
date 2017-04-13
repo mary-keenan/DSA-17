@@ -21,7 +21,7 @@ public class BillsNeeded {
         //iterate through bills
         for (int bill: billDenomination) {
             int key = currSum + bill;
-            if (sumMap.get(key) != null && sumMap.get(key) < numCurrBills) { //we've already tried this path and it's faster
+            if (sumMap.get(key) != null && sumMap.get(key) <= numCurrBills) { //we've already tried this path and it's faster
                 pathNumBills = billNumMap.get(key);
             } else { //first time down this path or we're off to a faster start
                 pathNumBills = pickBill(N, currSum + bill, numCurrBills + 1, billDenomination, sumMap, billNumMap);
