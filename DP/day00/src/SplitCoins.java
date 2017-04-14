@@ -13,39 +13,27 @@ public class SplitCoins {
         this.coins = coins;
         memo = new int[coins.length + 1][maxSum + 1];
 
+        for (int i=0; i<=coins.length; i++)
+            Arrays.fill(memo[i], -1);
+
         return pickCoin(maxSum, 0, 0);
     }
 
     private int pickCoin(int maxSum, int i, int currSum) {
-        int diff;
-        int minDiff = Integer.MAX_VALUE;
-        //base case -- no coins left to allocate -- return current difference
-        if (i == coins.length) {
-            diff = Math.abs(currSum * 2 - maxSum);
-            return diff;
-        }
 
         //ADD option
-        if (memo[i][currSum + coins[i]] != 0) { //already exists
-            diff = memo[i][currSum + coins[i]];
-        } else { //doesn't exist
-            diff = pickCoin(maxSum, i + 1, currSum + coins[i]);
-            memo[i + 1][currSum + coins[i]] = diff;
+        if (memo[i][currSum] != -1) { //already exists
+            return memo[i][currSum];
         }
 
-        if (diff < minDiff) minDiff = diff;
-
-        //DON'T ADD option
-        if (memo[i][currSum] != 0) { //already exists TODO: what if it equals 0?
-            diff = memo[i][currSum];
-        } else { //doesn't exist
-            diff = pickCoin(maxSum, i + 1, currSum);
-            memo[i + 1][currSum] = diff;
+        //base case -- no coins left to allocate -- return current difference
+        if (i == coins.length) {
+            return Math.abs(currSum * 2 - maxSum);
         }
 
-        if (diff < minDiff) minDiff = diff;
+        int diff1 = pickCoin(maxSum, i + 1, currSum + coins[i]);
+        int diff2 = pickCoin(maxSum, i + 1, currSum);
 
-
-        return minDiff;
+        return memo[i][currSum] = Math.min(diff1, diff2);
     }
 }
