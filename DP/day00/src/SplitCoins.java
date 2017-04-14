@@ -1,72 +1,51 @@
 import java.util.*;
 
 public class SplitCoins {
+    int[] coins;
+    int[][] memo;
 
     public int splitCoins(int[] coins) { //TODO: took away the static part -- it wouldn't let me call pickCoin
-        ArrayList coinsLeft = new ArrayList(); //TODO: doesn't seem to include first element of testcase FML
+        int maxSum = 0;
         for (int coin: coins) {
-            coinsLeft.add(coin);
+            maxSum += coin;
         }
-        ArrayList piles = new ArrayList();
-        piles.add(new ArrayList<>());
-        piles.add(new ArrayList<>());
-        return pickCoin(coinsLeft, piles, new HashMap());
+
+        this.coins = coins;
+        memo = new int[coins.length + 1][maxSum + 1];
+
+        return pickCoin(maxSum, 0, 0);
     }
 
-    private int pickCoin(ArrayList<Integer> coinsLeft, ArrayList<ArrayList<Integer>> piles, HashMap<ArrayList<ArrayList<Integer>>, Integer> pilesOutcomeMap) {
+    private int pickCoin(int maxSum, int i, int currSum) {
+        int diff;
         int minDiff = Integer.MAX_VALUE;
         //base case -- no coins left to allocate -- return current difference
-        if (coinsLeft.size() == 0) {
-            int sum1 = 0;
-            int sum2 = 0;
-            for (int coin: piles.get(0)) {
-                sum1 += coin;
-            }
-            for (int coin: piles.get(1)) {
-                sum2+= coin;
-            }
-            return Math.abs(sum1 - sum2);
+        if (i == coins.length) {
+            diff = Math.abs(currSum * 2 - maxSum);
+            return diff;
         }
 
-        //iterate through coins -- look at all possibilities
-        int diff = 0;
-        for (int coin: new ArrayList<>(coinsLeft)) { //TODO: put in for loop? Becomes difficult to differentiate between piles
-            for (int pileNum = 0; pileNum < piles.size(); pileNum++) {
-                ArrayList pile1 = new ArrayList(piles.get(0));
-                ArrayList pile2 = new ArrayList(piles.get(1));
-
-                if (pileNum == 0) pile1.add(coin); //TODO: check
-                else pile2.add(coin);
-
-                coinsLeft.remove((Object) coin); //cast as an object so it knows it's not an index
-
-                //check to see if already memoized
-                ArrayList key = putPilesInKey(pile1, pile2);
-                if (pilesOutcomeMap.get(key) != null && pilesOutcomeMap.get(key) < minDiff) { //already exists and is lower
-                    diff = pilesOutcomeMap.get(key); //update minDiff value with new, lower value
-                } else if (pilesOutcomeMap.get(key) == null){
-                    diff = pickCoin(coinsLeft, key, pilesOutcomeMap);
-                    pilesOutcomeMap.put(new ArrayList<>(key), diff);
-                }
-                if (diff < minDiff) minDiff = diff;
-
-                if (pileNum == 0) pile1.remove((Object) coin);
-                else pile2.remove((Object) coin);
-
-                coinsLeft.add(coin);
-            }
+        //ADD option
+        if (memo[i][currSum + coins[i]] != 0) { //already exists
+            diff = memo[i][currSum + coins[i]];
+        } else { //doesn't exist
+            diff = pickCoin(maxSum, i + 1, currSum + coins[i]);
+            memo[i + 1][currSum + coins[i]] = diff;
         }
+
+        if (diff < minDiff) minDiff = diff;
+
+        //DON'T ADD option
+        if (memo[i][currSum] != 0) { //already exists TODO: what if it equals 0?
+            diff = memo[i][currSum];
+        } else { //doesn't exist
+            diff = pickCoin(maxSum, i + 1, currSum);
+            memo[i + 1][currSum] = diff;
+        }
+
+        if (diff < minDiff) minDiff = diff;
+
 
         return minDiff;
     }
-
-    private ArrayList putPilesInKey(ArrayList pile1, ArrayList pile2) {
-        ArrayList pilesKey = new ArrayList();
-        Collections.sort(pile1); //TODO: probably bad for runtime -- need to be able to compare to dict keys regardless of order
-        Collections.sort(pile2);
-        pilesKey.add(pile2);
-        pilesKey.add(0, pile1);
-        return pilesKey;
-    }
-
 }
