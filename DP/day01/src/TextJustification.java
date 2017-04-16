@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class TextJustification {
 
     public static List<Integer> justifyText(String[] w, int m) {
