@@ -10,12 +10,12 @@ public class TextJustification {
     public static List<Integer> justifyText(String[] w, int m) {
         splitCostList = new ArrayList(w.length);
         for (int i = 0; i < w.length; i++) splitCostList.add(0, null);
-        List<Integer> lineBreaks = makeChoice(w, m, 0, 0, splitCostList);
+        List<Integer> lineBreaks = makeChoice(w, m, 0, 0);
 //        Collections.sort(lineBreaks);
         return lineBreaks;
     }
 
-    private static List<Integer> makeChoice(String[] w, int m, int currWordInd, int currCost, ArrayList<ArrayList> splitCostList) {
+    private static List<Integer> makeChoice(String[] w, int m, int currWordInd, int currCost) {
         List<Integer> splitIndices = new ArrayList<>();
         //check memo
         if (splitCostList.size() > 0 && splitCostList.get(currWordInd) != null)
@@ -34,10 +34,12 @@ public class TextJustification {
 
         //TODO: Given a starting index, what is the best way to split the rest of the lines?
 
+
+
         //initialize variables we're tracking
-        int currLineSum = w[currWordInd].length();
+        int currLineSum = -1; //no space at the beginning
         int minCost = calculateCost(w, m, 0, 0); //minCost is only this word in the line
-        int nextPointerInd = currWordInd + 1;
+        int nextPointerInd = currWordInd; //allows for one word lines
 
         //loop until options are no longer valid
         while (nextPointerInd < w.length) {
@@ -46,9 +48,7 @@ public class TextJustification {
                 currLineSum += nextWordLen + 1; //account for space between words
                 int currLineCost = currCost + calculateCost(w, m, currWordInd, nextPointerInd);
                 //make recursive call -- we want the final cost, and if it's lower, we want to keep the returned list
-                //TODO: not using wordLineBreaks makes me uncomfortable...but it seems unnecessary for now
-                System.out.println(nextPointerInd);
-                List<Integer> wordLineBreaks = new ArrayList<>(makeChoice(w, m, nextPointerInd + 1, currLineCost, splitCostList));
+                List<Integer> wordLineBreaks = new ArrayList<>(makeChoice(w, m, nextPointerInd + 1, currLineCost));
                 //check path's cost in splitCostList -- is it worth keeping?
                 int futureCost = (int) splitCostList.get(nextPointerInd + 1).get(0);
                 if (futureCost <= minCost) { //this path is best so far -- might want to put in memo if it stays the best
@@ -57,14 +57,13 @@ public class TextJustification {
                     minCost = futureCost; //update current minCost
                 }
             } else nextPointerInd = w.length; //we've looked at all of the viable options already, let's break out of this joint
-//            System.out.println(currWordInd);
-//            System.out.println(minCost);
             nextPointerInd++;
         }
         //save the best thing we found so far and get out of here
         ArrayList bestPair = new ArrayList();
         bestPair.add(0, minCost);
         bestPair.add(1, splitIndices);
+        splitCostList.remove(currWordInd); //correct for everything shifting back one when we add to certain index
         splitCostList.add(currWordInd, bestPair);
         return splitIndices;
     }
