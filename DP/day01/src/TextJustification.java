@@ -5,13 +5,16 @@ public class TextJustification {
 
     public static ArrayList<ArrayList> splitLinesList;
     public static ArrayList<Integer> costList;
+    public static ArrayList<Integer> lastCostList;
 
     public static List<Integer> justifyText(String[] w, int m) {
         splitLinesList = new ArrayList(w.length);
         costList = new ArrayList<>(w.length);
+        lastCostList = new ArrayList<>(w.length);
         for (int i = 0; i < w.length; i++) {
             splitLinesList.add(0, null);
             costList.add(0, null);
+            lastCostList.add(0, null);
         }
         List<Integer> lineBreaks = makeChoice(w, m, 0, 0);
         return lineBreaks;
@@ -21,19 +24,27 @@ public class TextJustification {
         ArrayList<Integer> breakIndices = new ArrayList<>();
 
         //check memo
-        if (splitLinesList.size() > 0 && splitLinesList.get(currWordInd) != null)
+        if (splitLinesList.size() > 0 && splitLinesList.get(currWordInd) != null) {
+            if (lastCostList.get(currWordInd) > currCost) {
+                int costGainForLinesAfterHere = costList.get(currWordInd) - lastCostList.get(currWordInd);
+                costList.remove(currWordInd);
+                costList.add(currWordInd, currCost + costGainForLinesAfterHere);
+                lastCostList.remove(currWordInd);
+                lastCostList.add(currWordInd, currCost);
+            }
             return splitLinesList.get(currWordInd);
+        }
 
         //TODO: Given a starting index, what is the best way to split the rest of the lines?
 
         //initialize variables we're tracking
         int currLineSum = w[currWordInd].length(); //no space at the beginning
         int nextPointerInd = currWordInd + 1; //allows for one word lines
-        int currLineCost = currCost + calculateCost(w, m, currWordInd, nextPointerInd);
+        int currLineCost = currCost + calculateCost(w, m, currLineSum);
         int minCost = Integer.MAX_VALUE;
 
         //base case -- no words left, will skip by while loop
-        if (currWordInd > w.length - 2) minCost = currCost;
+        if (currWordInd > w.length - 2) minCost = currLineCost;
 
         //loop until options are no longer valid
         while (nextPointerInd < w.length) {
@@ -49,7 +60,7 @@ public class TextJustification {
             int nextWordLen = w[nextPointerInd].length();
             if (currLineSum + nextWordLen + 1 <= m) { //make sure we won't go past the line limit -- set nextPointerInd to w.length if it does to end it
                 currLineSum += nextWordLen + 1; //account for space between words
-                currLineCost = currCost + calculateCost(w, m, currWordInd, nextPointerInd);
+                currLineCost = currCost + calculateCost(w, m, currLineSum);
                 nextPointerInd++;
             } else { //new word would exceed line sum
                 nextPointerInd = w.length; //we've looked at all of the viable options already, let's break out of this joint
@@ -62,15 +73,13 @@ public class TextJustification {
         costList.add(currWordInd, minCost);
         splitLinesList.remove(currWordInd);
         splitLinesList.add(currWordInd, breakIndices);
+        lastCostList.remove(currWordInd);
+        lastCostList.add(currWordInd, currCost);
         return breakIndices;
     }
 
-    private static Integer calculateCost(String[] w, int m, int startWordInd, int endWordInd) {
-        int charSum = 0;
-        for (int wordNum = startWordInd; wordNum < endWordInd; wordNum++) {
-            charSum += w[wordNum].length() + 1; //need to put in a space
-        }
-        int cost = (int) Math.pow(m - charSum + 1, 3); //take off the space at the end by subtracting 1 from charSum (which is just adding to m)
+    private static Integer calculateCost(String[] w, int m, int currLineSum) {
+        int cost = (int) Math.pow(m - currLineSum, 3); //take off the space at the end by subtracting 1 from charSum (which is just adding to m)
         return cost;
     }
 }
