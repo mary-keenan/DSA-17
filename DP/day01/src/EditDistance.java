@@ -19,7 +19,7 @@ public class EditDistance {
             table[x][0] = x;
         }
 
-        for (int x = 1; x < width; x++) { //start in top left corner, one column over TODO: repeated letters --> can't keep treating like the same
+        for (int x = 1; x < width; x++) { //start in top left corner, one column over
             for (int y = 1; y < height; y++) {
                 //initialize box values
                 int boxAboveVal = Integer.MAX_VALUE; //replace

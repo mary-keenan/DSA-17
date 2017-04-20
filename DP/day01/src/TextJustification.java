@@ -44,11 +44,13 @@ public class TextJustification {
         int minCost = Integer.MAX_VALUE;
 
         //base case -- no words left, will skip by while loop
-        if (currWordInd > w.length - 2) minCost = currLineCost;
+        if (currWordInd > w.length - 2)
+            minCost = currLineCost;
 
         //loop until options are no longer valid
         while (nextPointerInd < w.length) {
             //what if we split on this line?
+
             ArrayList<Integer> wordLineBreaks = new ArrayList<>(makeChoice(w, m, nextPointerInd, currLineCost));
             //check path's cost in splitCostList -- is it worth keeping?
             int futureCost = costList.get(nextPointerInd);
@@ -63,12 +65,19 @@ public class TextJustification {
                 currLineCost = currCost + calculateCost(w, m, currLineSum);
                 nextPointerInd++;
             } else { //new word would exceed line sum
-                nextPointerInd = w.length; //we've looked at all of the viable options already, let's break out of this joint
+                break; //we've looked at all of the viable options already, let's break out of this joint
+            }
+            //we're about to move beyond the last word
+            if (nextPointerInd == w.length) {
+                if (currCost + calculateCost(w, m, currLineSum) <= minCost) { //this path is best so far -- might want to put in memo if it stays the best
+                    breakIndices = new ArrayList<>(); //update current fave list
+                    minCost = currCost + calculateCost(w,m, currLineSum); //update current minCost
+                }
             }
         }
 
-        //save the best thing we found so far and get out of here
         breakIndices.add(0, currWordInd);
+        //save the best thing we found so far and get out of here
         costList.remove(currWordInd); //have to remove first so inserting doesn't move everything down
         costList.add(currWordInd, minCost);
         splitLinesList.remove(currWordInd);
