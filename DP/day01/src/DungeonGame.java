@@ -27,7 +27,7 @@ public class DungeonGame {
         int worstRight = Integer.MIN_VALUE;
         if (movesRight < map.length - 1) worstRight = makeChoice(map, movesRight + 1, movesDown, currHealthBalance, worstEver, memo);
         int worstDown = Integer.MIN_VALUE;
-        if (movesDown < map[0].length - 1) worstDown = makeChoice(map, movesRight, gitmovesDown + 1, currHealthBalance, worstEver, memo);
+        if (movesDown < map[0].length - 1) worstDown = makeChoice(map, movesRight, movesDown + 1, currHealthBalance, worstEver, memo);
 
         memo[movesRight][movesDown][0] = currHealthBalance;
         memo[movesRight][movesDown][1] = Math.max(worstRight, worstDown);
